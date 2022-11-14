@@ -1,28 +1,43 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app" class="overflow-x-hidden">
+    <MainHeader v-if="!member_view" />
+    <MemberHeader v-else />
+    <LoginDialog />
+    <SignupDialog />
+    <MainDialog />
+    <router-view />
   </div>
 </template>
 
+<style src="@/assets/css/output.css"></style>
+
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import MainHeader from '@/components/MainHeader.vue';
+import MemberHeader from '@/components/MemberHeader.vue';
+import LoginDialog from '@/components/LoginDialog.vue';
+import SignupDialog from '@/components/SignupDialog.vue';
+import MainDialog from '@/components/MainDialog.vue';
 export default {
-  name: 'App',
+  name: 'app',
   components: {
-    HelloWorld
-  }
-}
+    MainHeader,
+    LoginDialog,
+    SignupDialog,
+    MainDialog,
+    MemberHeader,
+  },
+  data() {
+    return {
+      member_view: false,
+    };
+  },
+  watch: {
+    $route() {
+      this.member_view = this.$route.meta.requiresAuth;
+    },
+  },
+  mounted() {
+    this.member_view = this.$route.meta.requiresAuth;
+  },
+};
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
