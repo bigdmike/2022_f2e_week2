@@ -54,10 +54,9 @@
             </span>
           </button>
         </li>
-      </ol>
-
-      <ol class="md:border-t border-primary_blue_light md:block flex pt-5">
-        <li class="md:w-full">
+        <li
+          class="md:w-full md:border-t border-primary_blue_light md:pt-5 md:mt-5"
+        >
           <button
             @click="$emit('update-action', '已封存')"
             class="md:p-5 md:h-auto h-full px-5 pt-2 pb-5 md:w-full w-auto flex items-center justify-between text-left md:rounded-l-2xl rounded-tl-2xl md:rounded-tr-none rounded-tr-2xl font-bold md:text-base text-sm transition-colors duration-200 hover:text-primary_blue_light"

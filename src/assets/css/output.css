@@ -1597,6 +1597,10 @@ video {
     margin-right: 1.25rem;
   }
 
+  .md\:mt-5{
+    margin-top: 1.25rem;
+  }
+
   .md\:block{
     display: block;
   }
@@ -1728,6 +1732,14 @@ video {
 
   .md\:pr-0{
     padding-right: 0px;
+  }
+
+  .md\:pt-10{
+    padding-top: 2.5rem;
+  }
+
+  .md\:pt-5{
+    padding-top: 1.25rem;
   }
 
   .md\:text-base{

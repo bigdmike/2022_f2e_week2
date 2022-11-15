@@ -1,5 +1,6 @@
 <template>
   <div class="block p-5 bg-white rounded-xl relative">
+    <RenameDialog ref="RenameDialog" @update-action="RenameTask" />
     <div class="flex items-center absolute top-5 right-5 z-10">
       <button
         @click="TriggerFavorite"
@@ -18,6 +19,7 @@
         >
           <li class="border-b border-zinc-300">
             <button
+              @click="OpenRenameDialog"
               class="block w-full text-left text-primary_black text-opacity-60 px-4 py-2 transition-colors duration-200 hover:text-primary_blue"
             >
               重新命名
@@ -131,11 +133,13 @@
 <script>
 import IconStar from '@/components/svg/icon_star.vue';
 import IconMore from '@/components/svg/icon_more.vue';
+import RenameDialog from '@/components/Dashboard/RenameDialog.vue';
 export default {
   name: 'TaskCard',
   components: {
     IconStar,
     IconMore,
+    RenameDialog,
   },
   props: {
     task_data: {
@@ -158,6 +162,14 @@ export default {
     };
   },
   methods: {
+    OpenRenameDialog() {
+      this.$refs.RenameDialog.Open(this.task_data.title);
+    },
+    RenameTask(val) {
+      let tmp_data = JSON.parse(JSON.stringify(this.task_data));
+      tmp_data.title = val;
+      this.UpdateData(tmp_data);
+    },
     GetStatus(val) {
       return val == '已完成' ? '已完成' : val == '已取消' ? '已取消' : '處理中';
     },
