@@ -11,6 +11,40 @@ export default new Vuex.Store({
       status: false,
       content: '',
     },
+    task_list: [
+      {
+        task_id: 1,
+        title: '會議通知單',
+        created_date: '2022/11/11',
+        end_date: '2022/11/20',
+        cover_image: '/2022_f2e_week2/img/泥作報價單_工作區域 1 1.jpg',
+        file: '/2022_f2e_week2/files/sample.pdf',
+        favorite: true,
+        status: '待自己簽署',
+      },
+      {
+        task_id: 2,
+        title: '泥作估價單',
+        created_date: '2022/11/02',
+        end_date: '2022/11/17',
+        cover_image: '/2022_f2e_week2/img/泥作報價單_工作區域 1 1.jpg',
+        file: '/2022_f2e_week2/files/sample.pdf',
+        favorite: false,
+        status: '待自己簽署',
+      },
+      {
+        task_id: 3,
+        title: '專案驗收單',
+        created_date: '2022/11/02',
+        end_date: '2022/11/22',
+        cover_image: '/2022_f2e_week2/img/泥作報價單_工作區域 1 1.jpg',
+        file: '/2022_f2e_week2/files/sample.pdf',
+        favorite: false,
+        status: '已完成',
+      },
+    ],
+    archive_task_list: [],
+    removed_task_list: [],
   },
   getters: {},
   mutations: {
@@ -23,6 +57,15 @@ export default new Vuex.Store({
     SetMainDialog(state, { action, content }) {
       state.main_dialog.status = action;
       state.main_dialog.content = content;
+    },
+    SetTaskData(state, task_data) {
+      state.task_list = task_data;
+    },
+    SetArchiveTaskData(state, task_data) {
+      state.archive_task_list.push(task_data);
+    },
+    SetRemoveTaskData(state, task_data) {
+      state.removed_task_list.push(task_data);
     },
   },
   actions: {},

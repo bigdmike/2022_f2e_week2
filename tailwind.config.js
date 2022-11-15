@@ -12,6 +12,9 @@ module.exports = {
         primary_black: '#131415',
         disable_gray: '#CCCCCC',
       },
+      fontFamily: {
+        'any-body': "'Anybody', cursive",
+      },
     },
   },
   plugins: [],
