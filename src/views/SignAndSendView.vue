@@ -2,6 +2,16 @@
   <main
     class="w-full relative z-10 bg-primary_blue_dark pt-24 min-h-screen flex md:flex-col"
   >
+    <p>選擇簽名</p>
+    <button class="download">download PDF</button>
+    <img
+      ref="SignImg"
+      class="sign"
+      src="/2022_f2e_week2/img/logo.png"
+      style="border: 1px solid #000"
+      width="250"
+      height="150"
+    />
     <div>
       <input
         ref="FileInput"
@@ -16,6 +26,7 @@
 </template>
 
 <script>
+import jsPDF from 'jspdf';
 export default {
   name: 'PreviewPdf',
   components: {},
@@ -102,6 +113,35 @@ export default {
 
       // 將 PDF 畫面設定為背景
       canvas.setBackgroundImage(pdfImage, canvas.renderAll.bind(canvas));
+    });
+
+    this.$refs.SignImg.addEventListener('click', () => {
+      if (!this.$refs.SignImg.src) return;
+
+      window.fabric.Image.fromURL(this.$refs.SignImg.src, function (image) {
+        image.top = 400;
+        image.scaleX = 0.5;
+        image.scaleY = 0.5;
+        canvas.add(image);
+      });
+    });
+
+    // 引入套件所提供的物件
+    const pdf = new jsPDF();
+
+    const download = document.querySelector('.download');
+
+    download.addEventListener('click', () => {
+      // 將 canvas 存為圖片
+      const image = canvas.toDataURL('image/png');
+
+      // 設定背景在 PDF 中的位置及大小
+      const width = pdf.internal.pageSize.width;
+      const height = pdf.internal.pageSize.height;
+      pdf.addImage(image, 'png', 0, 0, width, height);
+
+      // 將檔案取名並下載
+      pdf.save('download.pdf');
     });
   },
 };
