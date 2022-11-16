@@ -45,6 +45,18 @@ export default new Vuex.Store({
     ],
     archive_task_list: [],
     removed_task_list: [],
+    history_file_list: [
+      {
+        title: '會議通知單',
+        created_date: '2022/11/11',
+        file: '/files/dummy.pdf',
+      },
+      {
+        title: '油漆估價單',
+        created_date: '2022/11/11',
+        file: '/files/Get_Started_With_Smallpdf.pdf',
+      },
+    ],
   },
   getters: {},
   mutations: {

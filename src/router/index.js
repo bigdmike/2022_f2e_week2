@@ -20,6 +20,24 @@ const routes = [
       import(/* webpackChunkName: "dashboard" */ '../views/DashboardView.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/prepare_doc',
+    name: 'prepare_doc',
+    component: () =>
+      import(
+        /* webpackChunkName: "prepare_doc" */ '../views/PrepareDocView.vue'
+      ),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/sign_and_send',
+    name: 'sign_and_send',
+    component: () =>
+      import(
+        /* webpackChunkName: "sign_and_send" */ '../views/SignAndSendView.vue'
+      ),
+    meta: { requiresAuth: true },
+  },
 ];
 
 const router = new VueRouter({

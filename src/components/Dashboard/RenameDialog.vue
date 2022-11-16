@@ -5,15 +5,18 @@
   >
     <div
       data-dialog-box
-      class="w-[480px] max-w-full px-20 py-14 rounded-3xl bg-white relative z-10 text-center"
+      class="w-[480px] max-w-full p-10 rounded-3xl bg-white relative z-10 text-center"
     >
-      <h4 class="text-left text-2xl font-bold mb-5">重新命名文件</h4>
-      <div class="w-full mb-3">
+      <button @click="Close" class="absolute top-5 left-5 z-10 p-2">
+        <img src="/2022_f2e_week2/img/icon/icon_close.svg" class="w-3 h-3" />
+      </button>
+      <h4 class="text-2xl font-bold mb-5 text-center">重新命名文件</h4>
+      <div class="w-full mb-5">
         <input
           v-model="title"
           type="text"
           placeholder="請輸入文件標題"
-          class="py-4 px-5 border border-black rounded-md w-full"
+          class="py-3 px-5 border border-black rounded-md w-full"
         />
         <p v-if="GetError('title')" class="text-xs text-primary_red">
           請輸入文件標題
@@ -25,12 +28,6 @@
           class="px-4 py-2 mr-2 text-sm rounded-full bg-primary_blue text-white transition-colors duration-200 hover:bg-primary_blue_light"
         >
           儲存
-        </button>
-        <button
-          @click="Close"
-          class="px-4 py-2 text-sm rounded-full bg-transparent text-primary_blue transition-colors duration-200 hover:bg-primary_blue hover:text-white"
-        >
-          關閉
         </button>
       </div>
     </div>
