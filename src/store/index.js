@@ -47,14 +47,16 @@ export default new Vuex.Store({
     removed_task_list: [],
     history_file_list: [
       {
+        file_id: 1,
         title: '會議通知單',
         created_date: '2022/11/11',
-        file: '/files/dummy.pdf',
+        file: '/2022_f2e_week2/files/dummy.pdf',
       },
       {
+        file_id: 2,
         title: '油漆估價單',
         created_date: '2022/11/11',
-        file: '/files/Get_Started_With_Smallpdf.pdf',
+        file: '/2022_f2e_week2/files/Get_Started_With_Smallpdf.pdf',
       },
     ],
   },

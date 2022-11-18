@@ -123,7 +123,7 @@
 <script>
 import { dialog_animation } from '@/gsap/dialog';
 import { validEmail } from '@/common/validate.js';
-import { setLocalStorage } from '@/common/cookie';
+import { setLocalStorage } from '@/common/localstorage';
 export default {
   name: 'LoginDialog',
   data() {

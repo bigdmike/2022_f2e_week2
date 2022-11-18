@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import { setLocalStorage } from '@/common/localstorage';
 export default {
   name: 'FileUploader',
   data() {
@@ -92,13 +93,18 @@ export default {
       this.ParseFile(files[0]);
       this.upload_file = files[0];
     },
-    ParseFile(file) {
+    async ParseFile(file) {
       if (file.size > 1000000) {
         this.$store.commit('SetMainDialog', {
           action: true,
           content: '檔案大小不得超過10MB',
         });
         this.upload_file = null;
+      } else {
+        //
+        const base64_file = await this.readBlob(file);
+        setLocalStorage('upload_file', base64_file);
+        this.$router.push('/sign_and_send?type=upload_file');
       }
       console.log(
         'File information: ' +
@@ -109,6 +115,14 @@ export default {
           file.size +
           'bytes'
       );
+    },
+    readBlob(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => resolve(reader.result));
+        reader.addEventListener('error', reject);
+        reader.readAsDataURL(blob);
+      });
     },
   },
   mounted() {

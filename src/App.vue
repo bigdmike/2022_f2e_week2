@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="overflow-x-hidden">
+  <div id="app" class="">
     <MainHeader v-if="!member_view" />
     <MemberHeader v-else />
     <LoginDialog />

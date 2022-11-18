@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import HomeView from '../views/HomeView.vue';
-import { getLocalStorage } from '@/common/cookie';
+import { getLocalStorage } from '@/common/localstorage';
 import store from '@/store/index';
 
 Vue.use(VueRouter);
