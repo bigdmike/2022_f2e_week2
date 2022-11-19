@@ -41,7 +41,7 @@ const routes = [
 ];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: 'hash',
   base: '/2022_f2e_week2/',
   routes,
 });
