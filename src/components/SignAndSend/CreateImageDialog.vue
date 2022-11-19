@@ -105,6 +105,7 @@ export default {
     },
     Open() {
       this.reset();
+      this.view_mode = 'upload';
       this.status = true;
     },
     UseSign() {
