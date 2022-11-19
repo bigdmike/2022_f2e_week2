@@ -7,7 +7,7 @@
       data-dialog-box
       class="w-[553px] max-w-[90%] p-10 flex sm:flex-nowrap flex-wrap items-center rounded-3xl bg-white relative z-10 text-center"
     >
-      <div class="w-full">
+      <div class="w-full sm:mb-0 mb-10">
         <div
           class="border border-dashed border-primary_blue rounded-2xl overflow-hidden"
         >

@@ -88,15 +88,29 @@
           目前尚無待簽署的文件
         </p>
       </div>
-      <ol v-else class="-mx-3 flex items-stretch flex-wrap">
-        <li
-          class="px-3 xl:w-1/3 sm:w-1/2 w-full mb-6"
-          v-for="(item, item_index) in task_data"
-          :key="`task_${item_index}`"
+      <div v-else>
+        <ol
+          v-if="show_type == 'grid'"
+          class="-mx-3 flex items-stretch flex-wrap"
         >
-          <TaskCard :task_data="item" :task_index="item_index" />
-        </li>
-      </ol>
+          <li
+            class="px-3 xl:w-1/3 sm:w-1/2 w-full mb-6"
+            v-for="(item, item_index) in task_data"
+            :key="`task_${item_index}`"
+          >
+            <TaskCard :task_data="item" :task_index="item_index" />
+          </li>
+        </ol>
+        <ol v-if="show_type == 'list'">
+          <li
+            class="px-3 w-full mb-6"
+            v-for="(item, item_index) in task_data"
+            :key="`task_${item_index}`"
+          >
+            <TaskListCard :task_data="item" :task_index="item_index" />
+          </li>
+        </ol>
+      </div>
     </div>
   </div>
 </template>
@@ -108,6 +122,7 @@ import IconRefresh from '@/components/svg/icon_refresh.vue';
 import IconArrowLeft from '@/components/svg/icon_arrow_left.vue';
 import IconArrowRight from '@/components/svg/icon_arrow_right.vue';
 import TaskCard from '@/components/Dashboard/TaskCard.vue';
+import TaskListCard from '@/components/Dashboard/TaskListCard.vue';
 export default {
   name: 'TaskList',
   props: {
@@ -127,6 +142,7 @@ export default {
     IconArrowLeft,
     IconArrowRight,
     TaskCard,
+    TaskListCard,
   },
   methods: {},
 };

@@ -14,7 +14,6 @@
             type="text"
             class="text-xl md:w-auto w-full font-bold text-white bg-transparent focus:outline-none"
           />
-          <!-- <h4 class="text-xl font-bold text-white"></h4> -->
           <img
             src="/2022_f2e_week2/img/icon/icon_edit.svg"
             class="absolute top-1/2 right-5 transform -translate-y-1/2"
@@ -32,10 +31,9 @@
       </span>
       <button
         @click="$emit('open-create-dialog')"
-        class="block bg-primary_blue_light lg:rounded-l-3xl rounded-l-xl rounded-tr-xl lg:rounded-tr-3xl text-white py-4 md:py-3 lg:py-5 lg:pl-24 pl-10 text-left w-full"
+        class="bg-primary_blue_light lg:rounded-l-3xl rounded-l-xl rounded-tr-xl lg:rounded-tr-3xl text-white py-4 md:py-3 lg:py-5 lg:pl-24 sm:pl-10 flex items-center sm:justify-start justify-center text-left w-full"
       >
         <p class="font-bold leading-none">加入簽名</p>
-        <!-- <span class="text-xs text-disable_gray font-bold">拖曳加入文件</span> -->
       </button>
     </div>
     <div class="w-full mb-4 md:block hidden">

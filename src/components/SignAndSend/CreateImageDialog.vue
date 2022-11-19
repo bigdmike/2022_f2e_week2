@@ -87,6 +87,7 @@
 <script>
 import { dialog_animation } from '@/gsap/dialog';
 import { getLocalStorage, setLocalStorage } from '@/common/localstorage';
+import { readBlob } from '@/common/common';
 export default {
   name: 'CreateSignDialog',
   data() {
@@ -137,7 +138,7 @@ export default {
     },
 
     async UploadFile(files) {
-      const base64_file = await this.readBlob(files[0]);
+      const base64_file = await readBlob(files[0]);
       const canvas = this.$refs.MainCanvas;
       let ctx = canvas.getContext('2d');
 
@@ -178,14 +179,6 @@ export default {
     },
     OpenUpload() {
       this.$refs.FileUploader.click();
-    },
-    readBlob(blob) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.addEventListener('load', () => resolve(reader.result));
-        reader.addEventListener('error', reject);
-        reader.readAsDataURL(blob);
-      });
     },
   },
   mounted() {
