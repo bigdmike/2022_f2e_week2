@@ -15,7 +15,7 @@
         ref="CanvasBox"
         class="w-full rounded-3xl border border-dashed border-primary_blue aspect-[5/2] mb-5"
       >
-        <canvas ref="MainCanvas" class="w-full h-full"></canvas>
+        <canvas ref="MainCanvas"></canvas>
       </div>
       <div class="w-full flex justify-between items-center">
         <div class="flex items-center">
@@ -137,6 +137,7 @@ export default {
 
     // 開始繪圖時，將狀態開啟
     startPosition(e) {
+      console.log('start');
       e.preventDefault();
       this.isPainting = true;
     },
@@ -168,6 +169,8 @@ export default {
     // 重新設定畫布
     reset() {
       this.active_color = 'black';
+      this.$refs.MainCanvas.width = this.$refs.CanvasBox.clientWidth;
+      this.$refs.MainCanvas.height = this.$refs.CanvasBox.clientHeight;
       const ctx = this.$refs.MainCanvas.getContext('2d');
       ctx.clearRect(
         0,
@@ -180,8 +183,6 @@ export default {
   mounted() {
     this.dialog_animation = new dialog_animation(this.$refs.MainContent);
     const canvas = this.$refs.MainCanvas;
-    canvas.width = this.$refs.CanvasBox.clientWidth;
-    canvas.height = this.$refs.CanvasBox.clientHeight;
     const ctx = canvas.getContext('2d');
 
     // 設定線條的相關數值
@@ -189,6 +190,7 @@ export default {
     ctx.lineCap = 'round';
 
     // 設置狀態來確認滑鼠 / 手指是否按下或在畫布範圍中
+    this.isPainting = false;
 
     // event listener 電腦板
     canvas.addEventListener('mousedown', this.startPosition);
