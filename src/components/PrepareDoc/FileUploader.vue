@@ -89,7 +89,7 @@ export default {
       this.upload_file = files[0];
     },
     async ParseFile(file) {
-      if (file.size > 1000000) {
+      if (file.size > 10000000) {
         this.$store.commit('SetMainDialog', {
           action: true,
           content: '檔案大小不得超過10MB',

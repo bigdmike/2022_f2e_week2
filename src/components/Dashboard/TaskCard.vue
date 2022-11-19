@@ -1,5 +1,5 @@
 <template>
-  <div class="block p-5 bg-white rounded-xl relative">
+  <div class="flex flex-col p-5 h-full bg-white rounded-xl relative">
     <RenameDialog ref="RenameDialog" @update-action="RenameTask" />
     <div class="flex items-center absolute top-5 right-5 z-10">
       <button
@@ -54,7 +54,7 @@
     </div>
     <router-link
       :to="`/sign_and_send?type=task&id=${task_data.task_id}`"
-      class="flex pb-5 border-b border-zinc-300 relative z-0 mb-5"
+      class="flex pb-5 border-b border-zinc-300 relative z-0 mb-5 flex-1"
     >
       <div class="w-14 mr-5">
         <img

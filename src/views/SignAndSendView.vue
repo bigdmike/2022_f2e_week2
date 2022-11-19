@@ -14,9 +14,6 @@
         @create-action="CreateSign"
         @read-sign="ReadSignList"
     /></Teleport>
-    <Teleport to="#app">
-      <FinishDialog ref="FinishDialog" :image="finish_image" />
-    </Teleport>
     <div
       class="w-full max-w-screen-xl h-full md:flex-row flex-col mx-auto flex"
     >
@@ -59,19 +56,16 @@
           @create-canvas-list="CreateCanvasList"
           @create-finish-image="CreateFinishImage"
         />
-        <div
-          class="w-full h-full overflow-auto"
+        <FinishBox
+          ref="FinishBox"
+          :page_list="page_list"
+          :canvas_list="canvas_list"
+          :file_type="file_type"
+          :finish_image="finish_image"
+          :page="page"
+          :title="title"
           :class="view_mode == 'finish' ? 'block' : 'hidden'"
-          ref="FinishCanvas"
-        >
-          <img
-            src=""
-            class="w-full object-contain h-full"
-            v-for="(item, item_index) in page_list"
-            v-show="item_index == page"
-            :key="`finish_image_${item_index}`"
-          />
-        </div>
+        />
 
         <div
           v-if="file_type == 'pdf'"
@@ -95,7 +89,6 @@
 </template>
 
 <script>
-import jsPDF from 'jspdf';
 import Teleport from 'vue2-teleport';
 import { getLocalStorage } from '@/common/localstorage';
 import { readBlob } from '@/common/common.js';
@@ -104,10 +97,10 @@ import IconArrowRight from '@/components/svg/icon_arrow_right.vue';
 import LeftMenu from '@/components/SignAndSend/LeftMenu.vue';
 import CreateSignDialog from '@/components/SignAndSend/CreateSignDialog.vue';
 import CreateImageDilaog from '@/components/SignAndSend/CreateImageDialog.vue';
-import FinishDialog from '@/components/SignAndSend/FinishDialog.vue';
 import ProgressNav from '@/components/SignAndSend/ProgressNav.vue';
 import PDFCanvas from '@/components/SignAndSend/PDFCanvas.vue';
 import ImageCanvas from '@/components/SignAndSend/ImageCanvas.vue';
+import FinishBox from '@/components/SignAndSend/FinishBox.vue';
 export default {
   name: 'PreviewPdf',
   components: {
@@ -117,10 +110,10 @@ export default {
     CreateSignDialog,
     CreateImageDilaog,
     Teleport,
-    FinishDialog,
     ProgressNav,
     PDFCanvas,
     ImageCanvas,
+    FinishBox,
   },
   data() {
     return {
@@ -201,36 +194,7 @@ export default {
       }
     },
     DownloadFile() {
-      if (this.file_type == 'pdf') {
-        this.DownloadPDF();
-      } else {
-        this.DownloadImage();
-      }
-    },
-    DownloadPDF() {
-      // 引入套件所提供的物件
-      const pdf = new jsPDF();
-      this.canvas_list.forEach((item, item_index) => {
-        // 將 canvas 存為圖片
-        const image = item.toDataURL('image/png');
-        // 設定背景在 PDF 中的位置及大小
-        const width = pdf.internal.pageSize.width;
-        const height = pdf.internal.pageSize.height;
-        pdf.addImage(image, 'png', 0, 0, width, height);
-        item_index == this.canvas_list.length - 1 ? '' : pdf.addPage();
-      });
-
-      // 將檔案取名並下載
-      pdf.save(this.title + '.pdf');
-      this.$refs.FinishDialog.Open();
-    },
-    DownloadImage() {
-      const link = document.createElement('a');
-      link.href = this.$refs.FinishCanvas.querySelectorAll('img')[0].src;
-      link.download = this.title + '.png';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      this.$refs.FinishBox.DownloadFile();
     },
     SetFinish() {
       if (this.file_type == 'pdf') {
@@ -251,11 +215,8 @@ export default {
       }
     },
     CreateFinishImage(image_list) {
-      let image_el = this.$refs.FinishCanvas.querySelectorAll('img');
-      image_list.forEach((item, item_index) => {
-        image_el[item_index].src = item;
-        item_index == 0 ? (this.finish_image = item) : '';
-      });
+      this.finish_image = image_list[0];
+      this.$refs.FinishBox.UpdateImagePath(image_list);
     },
   },
   watch: {
