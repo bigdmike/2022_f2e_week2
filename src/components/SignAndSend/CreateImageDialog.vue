@@ -146,7 +146,6 @@ export default {
       image.src = base64_file;
 
       image.onload = () => {
-        // ctx.imageSmoothingEnabled = false;
         let newHeight, newWidth;
 
         canvas.width = canvas.clientWidth * 2;

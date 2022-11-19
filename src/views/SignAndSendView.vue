@@ -38,9 +38,10 @@
         <ProgressNav
           :view_mode="view_mode"
           @change-mode="view_mode = $event"
-          @download="DownloadPDF"
+          @download="DownloadFile"
         />
         <PDFCanvas
+          v-show="file_type == 'pdf'"
           ref="PDFCanvas"
           :class="view_mode == 'edit' ? 'block' : 'hidden'"
           :canvas_list="canvas_list"
@@ -48,6 +49,15 @@
           :page="page"
           @update-page-list="UpdatePageList"
           @create-canvas-list="CreateCanvasList"
+          @create-finish-image="CreateFinishImage"
+        />
+        <ImageCanvas
+          ref="ImageCanvas"
+          v-show="file_type == 'image'"
+          :class="view_mode == 'edit' ? 'block' : 'hidden'"
+          :canvas_list="canvas_list"
+          @create-canvas-list="CreateCanvasList"
+          @create-finish-image="CreateFinishImage"
         />
         <div
           class="w-full h-full overflow-auto"
@@ -64,6 +74,7 @@
         </div>
 
         <div
+          v-if="file_type == 'pdf'"
           class="md:flex hidden items-stretch absolute bottom-20 right-20 z-20 border border-zinc-300 bg-white py-1 px-1"
         >
           <button @click="ChangePage(-1)" class="text-black text-opacity-20">
@@ -96,6 +107,7 @@ import CreateImageDilaog from '@/components/SignAndSend/CreateImageDialog.vue';
 import FinishDialog from '@/components/SignAndSend/FinishDialog.vue';
 import ProgressNav from '@/components/SignAndSend/ProgressNav.vue';
 import PDFCanvas from '@/components/SignAndSend/PDFCanvas.vue';
+import ImageCanvas from '@/components/SignAndSend/ImageCanvas.vue';
 export default {
   name: 'PreviewPdf',
   components: {
@@ -108,6 +120,7 @@ export default {
     FinishDialog,
     ProgressNav,
     PDFCanvas,
+    ImageCanvas,
   },
   data() {
     return {
@@ -154,7 +167,17 @@ export default {
       } else {
         this.title = '未命名文件';
         const base64_file = getLocalStorage('upload_file');
-        this.$refs.PDFCanvas.CreateAllPage(base64_file);
+        if (this.$route.query.file_type == 'pdf') {
+          this.file_type = 'pdf';
+          this.$refs.PDFCanvas.CreateAllPage(base64_file);
+        } else {
+          this.file_type = 'image';
+          this.page_list = [];
+          this.page_list.push(null);
+          this.$nextTick(() => {
+            this.$refs.ImageCanvas.CreateCanvasView(base64_file);
+          });
+        }
       }
     },
     CreateSign(img_data) {
@@ -177,6 +200,13 @@ export default {
         this.sign_list = JSON.parse(list);
       }
     },
+    DownloadFile() {
+      if (this.file_type == 'pdf') {
+        this.DownloadPDF();
+      } else {
+        this.DownloadImage();
+      }
+    },
     DownloadPDF() {
       // 引入套件所提供的物件
       const pdf = new jsPDF();
@@ -194,18 +224,21 @@ export default {
       pdf.save(this.title + '.pdf');
       this.$refs.FinishDialog.Open();
     },
+    DownloadImage() {
+      const link = document.createElement('a');
+      link.href = this.$refs.FinishCanvas.querySelectorAll('img')[0].src;
+      link.download = this.title + '.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    },
     SetFinish() {
-      const canvas_page =
-        this.$refs.PageCanvas.querySelectorAll('.canvas_page');
-      const image_el = this.$refs.FinishCanvas.querySelectorAll('img');
-      // 依序將每一頁製作成圖片
-      this.page_list.forEach((item, item_index) => {
-        const image = canvas_page[item_index]
-          .querySelectorAll('canvas')[0]
-          .toDataURL('image/png');
-        image_el[item_index].src = image;
-        item_index == 0 ? (this.finish_image = image) : '';
-      });
+      if (this.file_type == 'pdf') {
+        this.$refs.PDFCanvas.CreateImage();
+      } else {
+        this.$refs.ImageCanvas.CreateImage();
+      }
+
       this.view_mode = 'finish';
     },
     ChangePage(val) {
@@ -216,6 +249,13 @@ export default {
       } else {
         this.page += val;
       }
+    },
+    CreateFinishImage(image_list) {
+      let image_el = this.$refs.FinishCanvas.querySelectorAll('img');
+      image_list.forEach((item, item_index) => {
+        image_el[item_index].src = item;
+        item_index == 0 ? (this.finish_image = item) : '';
+      });
     },
   },
   watch: {

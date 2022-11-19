@@ -3,6 +3,7 @@
     class="md:w-3/4 w-full flex flex-col relative z-10 lg:p-14 p-7 md:rounded-tl-3xl rounded-tr-3xl bg-primary_white md:flex-auto flex-1"
   >
     <button
+      @click="$router.push('/prepare_doc')"
       class="w-14 h-14 rounded-full transition-colors duration-200 hover:bg-primary_blue bg-primary_blue_light flex items-center justify-center sm:absolute fixed right-10 sm:top-0 sm:bottom-auto bottom-0 z-10 transform -translate-y-1/2 md:hidden"
     >
       <img src="/2022_f2e_week2/img/icon/icon_plus.svg" class="w-6" />

@@ -76,21 +76,15 @@ export default {
         );
       }
     },
-    // file drag hover
     FileDragHover(e) {
       e.stopPropagation();
       e.preventDefault();
-      //   e.target.className = e.type == 'dragover' ? 'hover' : '';
     },
-    // file selection
     FileSelectHandler(e) {
-      // cancel event and hover styling
       this.FileDragHover(e);
 
-      // fetch FileList object
       var files = e.target.files || e.dataTransfer.files;
 
-      // process all File objects
       this.ParseFile(files[0]);
       this.upload_file = files[0];
     },
@@ -102,20 +96,14 @@ export default {
         });
         this.upload_file = null;
       } else {
-        //
         const base64_file = await readBlob(file);
         setLocalStorage('upload_file', base64_file);
-        this.$router.push('/sign_and_send?type=upload_file');
+        if (file.type == 'application/pdf') {
+          this.$router.push('/sign_and_send?type=upload_file&file_type=pdf');
+        } else {
+          this.$router.push('/sign_and_send?type=upload_file&file_type=image');
+        }
       }
-      console.log(
-        'File information: ' +
-          file.name +
-          'type: ' +
-          file.type +
-          'size: ' +
-          file.size +
-          'bytes'
-      );
     },
   },
   mounted() {

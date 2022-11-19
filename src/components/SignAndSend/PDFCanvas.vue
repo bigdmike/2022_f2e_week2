@@ -116,6 +116,19 @@ export default {
         scaleY: scale,
       });
     },
+    CreateImage() {
+      const canvas_page =
+        this.$refs.PageCanvas.querySelectorAll('.canvas_page');
+      let image_list = [];
+      // 依序將每一頁製作成圖片
+      this.page_list.forEach((item, item_index) => {
+        const image = canvas_page[item_index]
+          .querySelectorAll('canvas')[0]
+          .toDataURL('image/png');
+        image_list.push(image);
+      });
+      this.$emit('create-finish-image', image_list);
+    },
   },
 };
 </script>
