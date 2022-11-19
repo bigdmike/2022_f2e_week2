@@ -48,8 +48,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const member_token = getLocalStorage('member_token');
-  if (to.meta.requiresAuth && member_token == '') {
-    console.log('here', member_token);
+  if (to.meta.requiresAuth && member_token == null) {
     store.commit('SetLoginDialog', true);
     next({ name: 'home' });
   } else {
