@@ -162,7 +162,9 @@ export default {
         const base64_file = getLocalStorage('upload_file');
         if (this.$route.query.file_type == 'pdf') {
           this.file_type = 'pdf';
-          this.$refs.PDFCanvas.CreateAllPage(base64_file);
+          this.$nextTick(() => {
+            this.$refs.PDFCanvas.CreateAllPage(base64_file);
+          });
         } else {
           this.file_type = 'image';
           this.page_list = [];
