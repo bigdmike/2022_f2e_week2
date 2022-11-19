@@ -185,7 +185,7 @@ export default {
       this.$refs.CreateSignDialog.Open();
     },
     OpenCreateImageDialog() {
-      this.CreateImageDilaog();
+      this.$refs.CreateImageDilaog.Open();
     },
     ReadSignList() {
       let list = getLocalStorage('sign_list');
