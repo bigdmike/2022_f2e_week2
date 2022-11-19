@@ -27,12 +27,22 @@
           class="flex items-center justify-between pb-5 border-b border-zinc-300"
         >
           <button
+            v-if="view_mode == 'edit'"
+            @click="$router.push('/tasks')"
             class="flex flex-shrink-0 md:text-base text-sm items-centertransition-colors duration-200 hover:text-primary_blue_dark"
           >
             <IconArrowLeft class="w-6 h-6 sm:mr-2" />
             <span class="font-bold sm:block hidden">回主畫面</span>
           </button>
 
+          <button
+            v-if="view_mode == 'finish'"
+            @click="view_mode = 'edit'"
+            class="flex flex-shrink-0 md:text-base text-sm items-centertransition-colors duration-200 hover:text-primary_blue_dark"
+          >
+            <IconArrowLeft class="w-6 h-6 sm:mr-2" />
+            <span class="font-bold sm:block hidden">上一步</span>
+          </button>
           <div class="flex items-center sm:mx-5 mx-3 md:flex-shrink w-auto">
             <span
               class="sm:px-4 sm:py-2 sm:w-auto sm:h-auto w-8 h-8 flex items-center justify-center md:text-base text-sm flex-shrink-0 rounded-full bg-primary_blue_light text-white"
@@ -67,6 +77,14 @@
               取消
             </button>
             <button
+              v-if="view_mode == 'edit'"
+              @click="SetFinish"
+              class="px-4 md:text-base sm:text-sm text-xs flex-shrink-0 py-2 rounded-full bg-primary_blue text-white font-bold"
+            >
+              完成
+            </button>
+            <button
+              v-if="view_mode == 'finish'"
               @click="DownloadPDF"
               class="px-4 md:text-base sm:text-sm text-xs flex-shrink-0 py-2 rounded-full bg-primary_blue text-white font-bold"
             >
@@ -74,8 +92,48 @@
             </button>
           </div>
         </div>
-        <div class="w-full h-full overflow-auto">
-          <canvas ref="PageCanvas"> </canvas>
+        <div
+          ref="PageCanvas"
+          class="w-full h-full overflow-auto"
+          :class="view_mode == 'edit' ? 'block' : 'hidden'"
+        >
+          <div
+            v-for="(item, item_index) in page_list"
+            :key="`page_${item_index}`"
+            v-show="item_index == page"
+            class="canvas_page w-full h-full"
+          >
+            <canvas></canvas>
+          </div>
+        </div>
+        <div
+          class="w-full h-full overflow-auto"
+          :class="view_mode == 'finish' ? 'block' : 'hidden'"
+          ref="FinishCanvas"
+        >
+          <img
+            src=""
+            class="w-full object-contain h-full"
+            v-for="(item, item_index) in page_list"
+            v-show="item_index == page"
+            :key="`finish_image_${item_index}`"
+          />
+        </div>
+
+        <div
+          class="md:flex hidden items-stretch absolute bottom-20 right-20 z-20 border border-zinc-300 bg-white py-1 px-1"
+        >
+          <button @click="ChangePage(-1)" class="text-black text-opacity-20">
+            <IconArrowLeft class="w-6" />
+          </button>
+          <p class="mx-5 font-any-body font-semibold">
+            {{ (this.page + 1) | number_format }}/{{
+              page_list.length | number_format
+            }}
+          </p>
+          <button @click="ChangePage(1)" class="text-black text-opacity-20">
+            <IconArrowRight class="w-6" />
+          </button>
         </div>
       </div>
     </div>
@@ -86,21 +144,25 @@
 import jsPDF from 'jspdf';
 import { getLocalStorage } from '@/common/localstorage';
 import IconArrowLeft from '@/components/svg/icon_arrow_left.vue';
+import IconArrowRight from '@/components/svg/icon_arrow_right.vue';
 import LeftMenu from '@/components/SignAndSend/LeftMenu.vue';
 import CreateSignDialog from '@/components/SignAndSend/CreateSignDialog.vue';
 export default {
   name: 'PreviewPdf',
   components: {
     IconArrowLeft,
+    IconArrowRight,
     LeftMenu,
     CreateSignDialog,
   },
   data() {
     return {
       page_list: [],
+      canvas_list: [],
       page: 0,
-      main_canvas: null,
       sign_list: [],
+      file_type: 'pdf',
+      view_mode: 'edit',
     };
   },
   props: {
@@ -137,15 +199,14 @@ export default {
         page_list.push(page_data);
       }
       this.page_list = page_list;
-      this.$nextTick(() => {
-        this.CreateCanvasView();
+      this.$nextTick(async () => {
+        for (let i in this.page_list) {
+          await this.CreateCanvasView(i);
+        }
       });
     },
     async CreatePDFCanvas(pdfDoc, page) {
       const pdfPage = await pdfDoc.getPage(page);
-
-      // 設定尺寸及產生 canvas
-      //   const viewport = pdfPage.getViewport({ scale: window.devicePixelRatio });
 
       const canvas = document.createElement('canvas');
       const context = canvas.getContext('2d');
@@ -171,17 +232,23 @@ export default {
       // 回傳做好的 PDF canvas
       return renderTask.promise.then(() => canvas);
     },
-    async CreateCanvasView() {
-      this.main_canvas = new window.fabric.Canvas(this.$refs.PageCanvas);
-      const pdfImage = await this.pdfToImage(this.page_list[this.page]);
-      this.main_canvas.setWidth(pdfImage.width * pdfImage.scaleX);
-      this.main_canvas.setHeight(pdfImage.height * pdfImage.scaleY);
+    async CreateCanvasView(page) {
+      this.canvas_list.push(null);
+      const page_canvas =
+        this.$refs.PageCanvas.querySelectorAll('.canvas_page');
+      console.log(page_canvas[page].querySelector('canvas'));
+      this.canvas_list[page] = new window.fabric.Canvas(
+        page_canvas[page].querySelector('canvas')
+      );
+      const pdfImage = await this.pdfToImage(this.page_list[page]);
+      this.canvas_list[page].setWidth(pdfImage.width * pdfImage.scaleX);
+      this.canvas_list[page].setHeight(pdfImage.height * pdfImage.scaleY);
       console.log(pdfImage);
 
       // 將 PDF 畫面設定為背景
-      this.main_canvas.setBackgroundImage(
+      this.canvas_list[page].setBackgroundImage(
         pdfImage,
-        this.main_canvas.renderAll.bind(this.main_canvas)
+        this.canvas_list[page].renderAll.bind(this.canvas_list[page])
       );
     },
     async pdfToImage(pdfData) {
@@ -212,12 +279,11 @@ export default {
       }
     },
     CreateSign(img_data) {
-      this.$refs.TestImg.src = img_data;
-      window.fabric.Image.fromURL(this.$refs.TestImg.src, (image) => {
+      window.fabric.Image.fromURL(img_data, (image) => {
         image.top = 400;
         image.scaleX = 0.5;
         image.scaleY = 0.5;
-        this.main_canvas.add(image);
+        this.canvas_list[this.page].add(image);
       });
     },
     OpenSignDialog() {
@@ -232,19 +298,40 @@ export default {
     DownloadPDF() {
       // 引入套件所提供的物件
       const pdf = new jsPDF();
-      // 將 canvas 存為圖片
-      const image = this.main_canvas.toDataURL('image/png');
-      // 設定背景在 PDF 中的位置及大小
-      const width = pdf.internal.pageSize.width;
-      const height = pdf.internal.pageSize.height;
-      pdf.addImage(image, 'png', 0, 0, width, height);
+      this.canvas_list.forEach((item, item_index) => {
+        // 將 canvas 存為圖片
+        const image = item.toDataURL('image/png');
+        // 設定背景在 PDF 中的位置及大小
+        const width = pdf.internal.pageSize.width;
+        const height = pdf.internal.pageSize.height;
+        pdf.addImage(image, 'png', 0, 0, width, height);
+        item_index == this.canvas_list.length - 1 ? '' : pdf.addPage();
+      });
+
       // 將檔案取名並下載
       pdf.save('download.pdf');
     },
-  },
-  watch: {
-    page() {
-      this.CreateCanvasView();
+    SetFinish() {
+      const canvas_page =
+        this.$refs.PageCanvas.querySelectorAll('.canvas_page');
+      console.log(canvas_page);
+      const image_el = this.$refs.FinishCanvas.querySelectorAll('img');
+      this.page_list.forEach((item, item_index) => {
+        const image = canvas_page[item_index]
+          .querySelectorAll('canvas')[0]
+          .toDataURL('image/png');
+        image_el[item_index].src = image;
+      });
+      this.view_mode = 'finish';
+    },
+    ChangePage(val) {
+      if (this.page + val <= 0) {
+        this.page = 0;
+      } else if (this.page + val > this.page_list.length - 1) {
+        this.page = this.page_list.length - 1;
+      } else {
+        this.page += val;
+      }
     },
   },
   computed: {
@@ -257,6 +344,11 @@ export default {
     window.pdfjsLib.GlobalWorkerOptions.workerSrc =
       'https://mozilla.github.io/pdf.js/build/pdf.worker.js';
     this.PrepareFile();
+  },
+  filters: {
+    number_format(val) {
+      return val >= 10 ? val : '0' + val;
+    },
   },
 };
 </script>

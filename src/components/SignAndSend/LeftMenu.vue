@@ -76,7 +76,7 @@
             class="flex items-center lg:text-base text-sm xl:pr-16 lg:pr-14 pr-10 lg:pl-5 font-bold py-4 text-white w-full relative"
           >
             <ImagePlus class="lg:w-6 lg:h-6 w-4 h-4 mr-3" />
-            創建簽名
+            上傳圖片
 
             <IconPlus
               class="lg:w-4 lg:h-4 h-3 w-3 absolute top-1/2 lg:right-5 right-3 transform -translate-y-1/2"
