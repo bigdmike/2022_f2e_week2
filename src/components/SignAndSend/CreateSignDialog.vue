@@ -7,6 +7,9 @@
       data-dialog-box
       class="w-full max-w-screen-md p-10 rounded-3xl bg-white relative z-10 text-center"
     >
+      <button @click="Close" class="absolute top-5 left-5 z-10 p-2">
+        <img src="/2022_f2e_week2/img/icon/icon_close.svg" class="w-3 h-3" />
+      </button>
       <h2 class="text-2xl font-bold mb-5">創建簽名</h2>
       <div
         ref="CanvasBox"
@@ -41,7 +44,7 @@
         <div class="flex items-center">
           <button
             @click="SaveSign"
-            class="px-4 py-2 mr-2 text-sm rounded-full bg-transparent text-primary_blue transition-colors duration-200 hover:bg-primary_blue_light"
+            class="px-4 py-2 mr-2 text-sm rounded-full bg-transparent text-primary_blue transition-colors duration-200 hover:bg-primary_blue_light hover:text-white"
           >
             加入我的簽名
           </button>
@@ -164,6 +167,7 @@ export default {
 
     // 重新設定畫布
     reset() {
+      this.active_color = 'black';
       const ctx = this.$refs.MainCanvas.getContext('2d');
       ctx.clearRect(
         0,

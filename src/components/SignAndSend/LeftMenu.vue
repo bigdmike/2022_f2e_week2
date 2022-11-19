@@ -7,16 +7,19 @@
     >
       <p class="text-sm text-disable_gray mb-1">文件名稱</p>
       <div class="flex relative pr-5">
-        <input
-          type="text"
-          value="泥作估價單"
-          class="text-xl font-bold text-white bg-transparent focus:outline-none"
-        />
-        <!-- <h4 class="text-xl font-bold text-white"></h4> -->
-        <img
-          src="/2022_f2e_week2/img/icon/icon_edit.svg"
-          class="absolute top-1/2 right-5 transform -translate-y-1/2"
-        />
+        <label>
+          <input
+            :value="title"
+            @input="$emit('update-title', $event.target.value)"
+            type="text"
+            class="text-xl font-bold text-white bg-transparent focus:outline-none"
+          />
+          <!-- <h4 class="text-xl font-bold text-white"></h4> -->
+          <img
+            src="/2022_f2e_week2/img/icon/icon_edit.svg"
+            class="absolute top-1/2 right-5 transform -translate-y-1/2"
+          />
+        </label>
       </div>
     </div>
     <div
@@ -61,6 +64,7 @@
       <ol class="w-full relative mb-4">
         <li>
           <button
+            @click="$emit('open-create-dialog')"
             class="flex items-center lg:text-base text-sm xl:pr-16 lg:pr-14 pr-10 lg:pl-5 font-bold py-4 text-white w-full relative"
           >
             <IconPen class="lg:w-6 lg:h-6 w-4 h-4 mr-3" />
@@ -136,6 +140,10 @@ export default {
     sign_list: {
       require: true,
       type: Array,
+    },
+    title: {
+      requrie: true,
+      type: String,
     },
   },
   components: {

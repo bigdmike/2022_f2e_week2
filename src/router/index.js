@@ -53,7 +53,6 @@ router.beforeEach((to, from, next) => {
     store.commit('SetLoginDialog', true);
     next({ name: 'home' });
   } else {
-    console.log('NEXT here');
     next();
   }
 });

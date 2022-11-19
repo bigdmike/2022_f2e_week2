@@ -14,6 +14,8 @@
     >
       <div class="md:w-1/4 w-full relative z-0">
         <LeftMenu
+          :title="title"
+          @update-title="title = $event"
           @open-create-dialog="OpenSignDialog"
           :sign_list="sign_list"
           @create-action="CreateSign"
@@ -163,6 +165,7 @@ export default {
       sign_list: [],
       file_type: 'pdf',
       view_mode: 'edit',
+      title: '',
     };
   },
   props: {
@@ -236,14 +239,12 @@ export default {
       this.canvas_list.push(null);
       const page_canvas =
         this.$refs.PageCanvas.querySelectorAll('.canvas_page');
-      console.log(page_canvas[page].querySelector('canvas'));
       this.canvas_list[page] = new window.fabric.Canvas(
         page_canvas[page].querySelector('canvas')
       );
       const pdfImage = await this.pdfToImage(this.page_list[page]);
       this.canvas_list[page].setWidth(pdfImage.width * pdfImage.scaleX);
       this.canvas_list[page].setHeight(pdfImage.height * pdfImage.scaleY);
-      console.log(pdfImage);
 
       // 將 PDF 畫面設定為背景
       this.canvas_list[page].setBackgroundImage(
@@ -264,16 +265,18 @@ export default {
     },
     async PrepareFile() {
       if (this.$route.query.type == 'list') {
-        const path = this.history_file_list.filter(
+        const file_data = this.history_file_list.filter(
           (item) => item.file_id == this.$route.query.id
-        )[0].file;
-        fetch(path)
+        )[0];
+        this.title = file_data.title;
+        fetch(file_data.path)
           .then((response) => response.blob())
           .then(async (blob) => {
             const base64_file = await this.readBlob(blob);
             this.CreateAllPage(base64_file);
           });
       } else {
+        this.title = '未命名文件';
         const base64_file = getLocalStorage('upload_file');
         this.CreateAllPage(base64_file);
       }
@@ -309,12 +312,11 @@ export default {
       });
 
       // 將檔案取名並下載
-      pdf.save('download.pdf');
+      pdf.save(this.title + '.pdf');
     },
     SetFinish() {
       const canvas_page =
         this.$refs.PageCanvas.querySelectorAll('.canvas_page');
-      console.log(canvas_page);
       const image_el = this.$refs.FinishCanvas.querySelectorAll('img');
       this.page_list.forEach((item, item_index) => {
         const image = canvas_page[item_index]
