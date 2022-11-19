@@ -21,7 +21,9 @@
         </p>
         <div class="text-sm text-primary_black text-opacity-60 w-28">
           <button
-            @click="$router.push(`/sign_and_send?type=list&id=${item.file_id}`)"
+            @click="
+              $router.push(`/sign_and_send?type=history&id=${item.file_id}`)
+            "
             class="sm:py-2 py-1 sm:px-4 px-3 sm:text-sm text-xs font-semibold text-primary_blue border border-primary_blue sm:rounded-lg rounded-full transition-colors duration-200 hover:bg-primary_blue hover:text-white"
           >
             選擇文件

@@ -2,12 +2,21 @@
   <main
     class="w-full relative z-10 bg-primary_blue_dark md:pt-[80px] pt-24 min-h-screen md:flex-col"
   >
-    <img src="" ref="TestImg" class="hidden" />
-    <CreateSignDialog
-      ref="CreateSignDialog"
-      @create-action="CreateSign"
-      @read-sign="ReadSignList"
-    />
+    <Teleport to="#app">
+      <CreateImageDilaog
+        ref="CreateImageDilaog"
+        @create-action="CreateSign"
+        @read-sign="ReadSignList"
+    /></Teleport>
+    <Teleport to="#app">
+      <CreateSignDialog
+        ref="CreateSignDialog"
+        @create-action="CreateSign"
+        @read-sign="ReadSignList"
+    /></Teleport>
+    <Teleport to="#app">
+      <FinishDialog ref="FinishDialog" :image="finish_image" />
+    </Teleport>
     <div
       style="height: calc(100vh - 80px)"
       class="w-full max-w-screen-xl md:flex-row flex-col mx-auto flex"
@@ -17,6 +26,7 @@
           :title="title"
           @update-title="title = $event"
           @open-create-dialog="OpenSignDialog"
+          @open-create-image="OpenCreateImageDialog"
           :sign_list="sign_list"
           @create-action="CreateSign"
           @read-sign="ReadSignList"
@@ -56,7 +66,12 @@
               class="block h-[2px] sm:w-28 w-16 flex-shrink bg-primary_blue opacity-40"
             ></i>
             <span
-              class="sm:px-4 sm:py-2 sm:w-auto sm:h-auto w-8 h-8 flex items-center justify-center md:text-base text-sm flex-shrink-0 rounded-full bg-primary_blue text-white"
+              :class="
+                view_mode == 'edit'
+                  ? 'bg-primary_blue'
+                  : 'bg-primary_blue_light'
+              "
+              class="sm:px-4 sm:py-2 sm:w-auto sm:h-auto w-8 h-8 flex items-center justify-center md:text-base text-sm flex-shrink-0 rounded-full text-white"
             >
               <b class="font-bold sm:block hidden">進行簽署</b>
               <b class="font-bold sm:hidden block font-any-body">2</b>
@@ -65,7 +80,12 @@
               class="block h-[2px] sm:w-28 w-16 flex-shrink bg-primary_blue opacity-40"
             ></i>
             <span
-              class="sm:px-4 sm:py-2 sm:w-auto sm:h-auto w-8 h-8 flex items-center justify-center md:text-base text-sm flex-shrink-0 rounded-full bg-transparent text-primary_blue_light"
+              :class="
+                view_mode == 'finish'
+                  ? 'bg-primary_blue text-white'
+                  : 'bg-transparent text-primary_blue_light'
+              "
+              class="sm:px-4 sm:py-2 sm:w-auto sm:h-auto w-8 h-8 flex items-center justify-center md:text-base text-sm flex-shrink-0 rounded-full"
             >
               <b class="font-bold sm:block hidden">下載檔案</b>
               <b class="font-bold sm:hidden block font-any-body">3</b>
@@ -144,11 +164,14 @@
 
 <script>
 import jsPDF from 'jspdf';
+import Teleport from 'vue2-teleport';
 import { getLocalStorage } from '@/common/localstorage';
 import IconArrowLeft from '@/components/svg/icon_arrow_left.vue';
 import IconArrowRight from '@/components/svg/icon_arrow_right.vue';
 import LeftMenu from '@/components/SignAndSend/LeftMenu.vue';
 import CreateSignDialog from '@/components/SignAndSend/CreateSignDialog.vue';
+import CreateImageDilaog from '@/components/SignAndSend/CreateImageDialog.vue';
+import FinishDialog from '@/components/SignAndSend/FinishDialog.vue';
 export default {
   name: 'PreviewPdf',
   components: {
@@ -156,11 +179,15 @@ export default {
     IconArrowRight,
     LeftMenu,
     CreateSignDialog,
+    CreateImageDilaog,
+    Teleport,
+    FinishDialog,
   },
   data() {
     return {
       page_list: [],
       canvas_list: [],
+      finish_image: '',
       page: 0,
       sign_list: [],
       file_type: 'pdf',
@@ -264,12 +291,23 @@ export default {
       });
     },
     async PrepareFile() {
-      if (this.$route.query.type == 'list') {
+      if (this.$route.query.type == 'history') {
         const file_data = this.history_file_list.filter(
           (item) => item.file_id == this.$route.query.id
         )[0];
         this.title = file_data.title;
-        fetch(file_data.path)
+        fetch(file_data.file)
+          .then((response) => response.blob())
+          .then(async (blob) => {
+            const base64_file = await this.readBlob(blob);
+            this.CreateAllPage(base64_file);
+          });
+      } else if (this.$route.query.type == 'task') {
+        const file_data = this.task_list.filter(
+          (item) => item.task_id == this.$route.query.id
+        )[0];
+        this.title = file_data.title;
+        fetch(file_data.file)
           .then((response) => response.blob())
           .then(async (blob) => {
             const base64_file = await this.readBlob(blob);
@@ -292,6 +330,9 @@ export default {
     OpenSignDialog() {
       this.$refs.CreateSignDialog.Open();
     },
+    OpenCreateImageDialog() {
+      this.CreateImageDilaog();
+    },
     ReadSignList() {
       let list = getLocalStorage('sign_list');
       if (list) {
@@ -313,6 +354,7 @@ export default {
 
       // 將檔案取名並下載
       pdf.save(this.title + '.pdf');
+      this.$refs.FinishDialog.Open();
     },
     SetFinish() {
       const canvas_page =
@@ -323,6 +365,7 @@ export default {
           .querySelectorAll('canvas')[0]
           .toDataURL('image/png');
         image_el[item_index].src = image;
+        item_index == 0 ? (this.finish_image = image) : '';
       });
       this.view_mode = 'finish';
     },
@@ -339,6 +382,9 @@ export default {
   computed: {
     history_file_list() {
       return this.$store.state.history_file_list;
+    },
+    task_list() {
+      return this.$store.state.task_list;
     },
   },
   created() {

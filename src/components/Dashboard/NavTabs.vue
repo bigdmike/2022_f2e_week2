@@ -11,6 +11,7 @@
           <img src="/2022_f2e_week2/img/icon/icon_plus.svg" class="w-6" />
         </span>
         <button
+          @click="$router.push('/prepare_doc')"
           class="block bg-primary_blue_light rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl text-white py-4 lg:pl-24 pl-20 text-left w-full"
         >
           新增文件

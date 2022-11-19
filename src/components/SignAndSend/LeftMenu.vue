@@ -7,12 +7,12 @@
     >
       <p class="text-sm text-disable_gray mb-1">文件名稱</p>
       <div class="flex relative pr-5">
-        <label>
+        <label class="block w-full">
           <input
             :value="title"
             @input="$emit('update-title', $event.target.value)"
             type="text"
-            class="text-xl font-bold text-white bg-transparent focus:outline-none"
+            class="text-xl md:w-auto w-full font-bold text-white bg-transparent focus:outline-none"
           />
           <!-- <h4 class="text-xl font-bold text-white"></h4> -->
           <img
@@ -77,6 +77,7 @@
         </li>
         <li>
           <button
+            @click="$emit('open-create-image')"
             class="flex items-center lg:text-base text-sm xl:pr-16 lg:pr-14 pr-10 lg:pl-5 font-bold py-4 text-white w-full relative"
           >
             <ImagePlus class="lg:w-6 lg:h-6 w-4 h-4 mr-3" />

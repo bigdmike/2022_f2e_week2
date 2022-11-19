@@ -10,6 +10,7 @@
           class="flex items-center justify-between pb-5 border-b border-zinc-300 sm:mb-20 mb-5"
         >
           <button
+            @click="$router.push('/tasks')"
             class="flex flex-shrink-0 md:text-base text-sm items-centertransition-colors duration-200 hover:text-primary_blue_dark"
           >
             <IconArrowLeft class="w-6 h-6 sm:mr-2" />
@@ -44,6 +45,7 @@
           </div>
 
           <button
+            @click="$router.push('/tasks')"
             class="sm:px-4 px-3 md:text-base sm:text-sm text-xs flex-shrink-0 sm:py-2 py-1 rounded-full border border-black font-bold"
           >
             取消簽署

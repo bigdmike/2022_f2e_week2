@@ -1,11 +1,11 @@
 <template>
   <div
     ref="MainContent"
-    class="fixed top-0 left-full w-screen bottom-0 z-30 flex items-center justify-center"
+    class="fixed top-0 left-full w-full bottom-0 z-30 flex items-center justify-center"
   >
     <div
       data-dialog-box
-      class="w-full max-w-screen-md p-10 rounded-3xl bg-white relative z-10 text-center"
+      class="w-full md:max-w-screen-md max-w-[90%] p-10 rounded-3xl bg-white relative z-10 text-center"
     >
       <button @click="Close" class="absolute top-5 left-5 z-10 p-2">
         <img src="/2022_f2e_week2/img/icon/icon_close.svg" class="w-3 h-3" />
@@ -179,12 +179,6 @@ export default {
   },
   mounted() {
     this.dialog_animation = new dialog_animation(this.$refs.MainContent);
-    if (this.status) {
-      this.dialog_animation.open();
-    } else {
-      this.dialog_animation.close();
-    }
-
     const canvas = this.$refs.MainCanvas;
     canvas.width = this.$refs.CanvasBox.clientWidth;
     canvas.height = this.$refs.CanvasBox.clientHeight;

@@ -53,7 +53,7 @@
       </button>
     </div>
     <router-link
-      to="/"
+      :to="`/sign_and_send?type=task&id=${task_data.task_id}`"
       class="flex pb-5 border-b border-zinc-300 relative z-0 mb-5"
     >
       <div class="w-14 mr-5">

@@ -32,10 +32,7 @@
           @click="OpenLoginDialog"
           class="px-2 py-1 flex items-center bg-white rounded-full font-bold transition-colors duration-200 hover:bg-primary_blue hover:text-white"
         >
-          <img
-            class="md:mr-3 mr-1"
-            src="/2022_f2e_week2/img/icon/icon_menu.svg"
-          />
+          <IconMenu class="md:mr-3 mr-1" />
           <span
             class="flex items-center justify-center md:w-8 md:h-8 w-6 h-6 bg-primary_blue_light text-white rounded-full"
             >F</span
@@ -47,8 +44,12 @@
 </template>
 
 <script>
+import IconMenu from '@/components/svg/icon_menu.vue';
 export default {
   name: 'MainHeader',
+  components: {
+    IconMenu,
+  },
   methods: {
     OpenLoginDialog() {
       this.$store.commit('SetLoginDialog', true);
