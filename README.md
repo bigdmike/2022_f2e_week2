@@ -1,6 +1,6 @@
 # 2022 F2E Digital Signature
 
-![封面圖](https://bigdmike.github.io/2022_f2e_week2/img/cover.jpg)
+![封面圖](https://github.com/bigdmike/2022_f2e_week2/blob/main/public/img/cover.jpg)
 
 ## 作品說明
 
